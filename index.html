@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu Nombre - Game Designer y Game Director</title>
+<meta name="description" content="Portfolio de Tu Nombre, game designer y game director.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎲</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ COLORES Y TIPOGRAFÍAS: editá acá ============
+     El tema oscuro es el de por defecto. El claro se activa con el botón "Tema". */
+  :root {
+    --paper: #10132B;
+    --ink: #ECEEFA;
+    --ink-soft: #A3A9CC;
+    --grid: #1D2245;
+    --accent: #7E92FF;
+    --accent-ink: #10132B;
+    --mark: #FFD84D;
+    --card: #171B3A;
+    --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --paper: #F3F4F8;
+    --ink: #151A3C;
+    --ink-soft: #4A5073;
+    --grid: #DCE0EE;
+    --accent: #2B45F5;
+    --accent-ink: #FFFFFF;
+    --card: #FFFFFF;
+    color-scheme: light;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  /* Cabecera */
+  header.top { padding: 2.25rem 0 1.75rem; }
+  header.top .wrap { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; }
+  h1 {
+    font-family: var(--display); font-weight: 800;
+    font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1; letter-spacing: -0.03em; margin: 0 0 0.5rem;
+  }
+  .role { margin: 0; color: var(--ink-soft); font-size: 1.15rem; }
+  .role strong { color: var(--ink); font-weight: 600; background: linear-gradient(transparent 62%, var(--mark) 62%); }
+  .theme-toggle {
+    background: transparent; color: var(--ink); border: 2px solid var(--ink); border-radius: 6px;
+    padding: 0.3rem 0.75rem; font: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer;
+  }
+
+  /* Pestañas */
+  .tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.25rem 0 0; scrollbar-width: thin; }
+  .tab {
+    flex: 0 0 auto;
+    font-family: var(--display); font-weight: 700; font-size: 1.1rem;
+    padding: 0.8rem 1.4rem;
+    background: transparent; color: var(--ink);
+    border: 2px solid var(--ink); border-bottom: 0;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    position: relative; top: 2px;
+  }
+  .tab:hover { background: var(--card); }
+  .tab[aria-selected="true"] { background: var(--card); box-shadow: inset 0 4px 0 var(--accent); }
+
+  .panels { background: var(--card); border: 2px solid var(--ink); border-radius: 0 10px 10px 10px; margin-bottom: 3rem; }
+  .panel { display: none; padding: 1.75rem; }
+  .panel.active { display: block; }
+  .panel-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 2.25rem; align-items: start; }
+
+  /* Media del proyecto */
+  .media {
+    aspect-ratio: 16 / 9; background: var(--grid); border: 2px solid var(--ink); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    color: var(--ink-soft); padding: 1rem; overflow: hidden;
+  }
+  .media img, .media video, .media iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+  .thumbs { display: flex; gap: 0.6rem; margin-top: 0.75rem; flex-wrap: wrap; }
+  .thumbs .t {
+    width: 5.5rem; aspect-ratio: 16 / 9; background: var(--grid); border: 2px solid var(--ink); border-radius: 6px;
+    overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--ink-soft);
+  }
+  .thumbs .t img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Info del proyecto */
+  .panel h2 { font-family: var(--display); font-weight: 800; font-size: clamp(1.7rem, 3.5vw, 2.4rem); letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.3rem; }
+  .meta { color: var(--ink-soft); margin: 0 0 1.25rem; font-size: 0.97rem; }
+  .summary { margin: 0 0 1.25rem; }
+  dl.facts { margin: 0 0 1.5rem; display: grid; grid-template-columns: 6.5rem 1fr; gap: 0.5rem 1rem; font-size: 0.98rem; }
+  dl.facts dt { font-weight: 600; }
+  dl.facts dd { margin: 0; color: var(--ink-soft); }
+  .btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 0.65rem 1.2rem; font-weight: 600; text-decoration: none;
+    border-radius: 6px; border: 2px solid var(--ink); color: var(--ink); font-size: 0.97rem;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn:hover { transform: translateY(-1px); }
+
+  footer { padding: 0 0 3rem; color: var(--ink-soft); font-size: 0.97rem; }
+  footer .wrap { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  @media (max-width: 52rem) {
+    .panel-grid { grid-template-columns: 1fr; }
+    .panel { padding: 1.25rem; }
+    .panels { border-radius: 0 0 10px 10px; }
+    dl.facts { grid-template-columns: 1fr; gap: 0; }
+    dl.facts dd { margin-bottom: 0.6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn:hover { transform: none; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <h1>Tu Nombre</h1>
+      <p class="role"><strong>Game designer y game director.</strong> Unity y C#. También Godot y Unreal.</p>
+    </div>
+    <button class="theme-toggle" id="theme" type="button" aria-label="Cambiar entre tema claro y oscuro">Tema</button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- ============ PESTAÑAS ============
+         Cada <button class="tab"> se corresponde con un <section class="panel"> en el mismo orden.
+         Para agregar un proyecto: copiá un botón y un panel enteros. -->
+    <div class="tabs" role="tablist" aria-label="Proyectos">
+      <button class="tab" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true">Proyecto en Unity</button>
+      <button class="tab" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Segundo proyecto</button>
+      <button class="tab" role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">Tercer proyecto</button>
+    </div>
+
+    <div class="panels">
+
+      <!-- ===== PROYECTO 1 ===== -->
+      <section class="panel active" role="tabpanel" id="panel-1" aria-labelledby="tab-1" tabindex="0">
+        <div class="panel-grid">
+          <div>
+            <div class="media">
+              <!-- Reemplazá por: <img src="img/proyecto-1.jpg" alt="Captura del juego">
+                   o un video: <video src="img/proyecto-1.mp4" controls muted loop></video>
+                   o YouTube: <iframe src="https://www.youtube.com/embed/ID_DEL_VIDEO" allowfullscreen></iframe> -->
+              Captura, GIF o video del juego
+            </div>
+            <div class="thumbs" aria-label="Más imágenes">
+              <div class="t">Imagen 2</div>
+              <div class="t">Imagen 3</div>
+              <div class="t">Imagen 4</div>
+            </div>
+          </div>
+          <div>
+            <h2>Nombre del juego</h2>
+            <p class="meta">Unity, C#. En desarrollo.</p>
+            <p class="summary">Una o dos frases sobre qué es el juego y qué lo hace distinto.</p>
+            <dl class="facts">
+              <dt>Mi rol</dt><dd>Game director y diseñador. Programación de personaje y animación.</dd>
+              <dt>Equipo</dt><dd>X personas.</dd>
+              <dt>Desafío</dt><dd>Qué problema de diseño resolviste.</dd>
+              <dt>Resultado</dt><dd>Qué lograste, con números si los tenés.</dd>
+            </dl>
+            <div class="btns">
+              <a class="btn primary" href="#">Jugalo</a>
+              <a class="btn" href="https://github.com/tu-usuario/tu-repo">Código</a>
+              <a class="btn" href="#">Documento de diseño</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PROYECTO 2 ===== -->
+      <section class="panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2" tabindex="0">
+        <div class="panel-grid">
+          <div>
+            <div class="media">Captura, GIF o video del juego</div>
+            <div class="thumbs" aria-label="Más imágenes">
+              <div class="t">Imagen 2</div>
+              <div class="t">Imagen 3</div>
+            </div>
+          </div>
+          <div>
+            <h2>Nombre del proyecto</h2>
+            <p class="meta">Motor y lenguaje. Estado.</p>
+            <p class="summary">Una o dos frases sobre qué es.</p>
+            <dl class="facts">
+              <dt>Mi rol</dt><dd>Tu responsabilidad concreta.</dd>
+              <dt>Desafío</dt><dd>El problema de diseño.</dd>
+              <dt>Resultado</dt><dd>Lo que lograste.</dd>
+            </dl>
+            <div class="btns">
+              <a class="btn primary" href="#">Ver proyecto</a>
+              <a class="btn" href="#">Código</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PROYECTO 3 ===== -->
+      <section class="panel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" tabindex="0">
+        <div class="panel-grid">
+          <div>
+            <div class="media">Imagen del documento, diagrama o prototipo</div>
+          </div>
+          <div>
+            <h2>Nombre del proyecto</h2>
+            <p class="meta">Tipo de proyecto. Estado.</p>
+            <p class="summary">Una o dos frases sobre qué es.</p>
+            <dl class="facts">
+              <dt>Mi rol</dt><dd>Tu responsabilidad concreta.</dd>
+              <dt>Resultado</dt><dd>Lo que lograste.</dd>
+            </dl>
+            <div class="btns">
+              <a class="btn primary" href="#">Ver proyecto</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="mailto:tu@email.com">tu@email.com</a>
+    <a href="https://github.com/tu-usuario">GitHub</a>
+    <a href="https://www.linkedin.com/in/tu-usuario">LinkedIn</a>
+    <a href="https://tu-usuario.itch.io">itch.io</a>
+  </div>
+</footer>
+
+<script>
+  // Pestañas: clic, flechas del teclado, y link directo con #proyecto-2
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+
+    function select(i, focus) {
+      tabs.forEach(function (t, k) {
+        var on = k === i;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        panels[k].classList.toggle('active', on);
+      });
+      if (focus) tabs[i].focus();
+      try { history.replaceState(null, '', '#proyecto-' + (i + 1)); } catch (e) {}
+    }
+
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { select(i); });
+      t.addEventListener('keydown', function (e) {
+        var n = tabs.length;
+        if (e.key === 'ArrowRight') { e.preventDefault(); select((i + 1) % n, true); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); select((i - 1 + n) % n, true); }
+        if (e.key === 'Home') { e.preventDefault(); select(0, true); }
+        if (e.key === 'End') { e.preventDefault(); select(n - 1, true); }
+      });
+    });
+
+    var m = /^#proyecto-(\d+)$/.exec(location.hash);
+    if (m && tabs[+m[1] - 1]) select(+m[1] - 1);
+  })();
+
+  // Tema claro/oscuro
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById('theme');
+    try { var saved = localStorage.getItem('theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+    btn.addEventListener('click', function () {
+      var current = root.getAttribute('data-theme') || 'dark';
+      var next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>
